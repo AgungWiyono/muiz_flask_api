@@ -1,4 +1,5 @@
 {
     "files.autoSave": "off",
-    "python.pythonPath": "${workspaceFolder}/flask/bin/python"
+    "python.pythonPath": "${workspaceFolder}/flask/bin/python",
+    "markdown.extension.preview.autoShowPreviewToSide": true
 }

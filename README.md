@@ -13,3 +13,8 @@ export FLASK_APP=muiz_api.py
 export FLASK_ENV=development
 flask run
 ```
+
+Migration -> flask_migration
+flask db migrate -m "Comment"
+flask db upgrade
+
