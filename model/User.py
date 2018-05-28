@@ -1,11 +1,16 @@
 from flask_restful import Resource, reqparse
 from api.JsonReturn import JsonReturn
-from db import mysql
+from db import db
 
 def map_sql_error(obj):
     return str(obj[0])
 
-class User(Resource):
+class User:
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
+class UserApi(Resource):
     def get(self):
         return {'Hello':'World'}
 
@@ -28,22 +33,26 @@ class User(Resource):
             if _userPassword is None:
                 return JsonReturn.fail('password can\'t empty')
 
-            conn = mysql.connect()
-            cursor = conn.cursor()
-            cursor.callproc('spCreateUser',(_userName, _userEmail, _userPassword))
-            data = cursor.fetchall()
-
-            if len(data) is 0:
-                conn.commit()
-                data =  {
-                        'name': _userName,
-                        'email': _userEmail
-                    }
-                return JsonReturn.success(data, 201)
-            else:
-                msg = list(map(map_sql_error, data))
-                return JsonReturn.fail(msg)
+            new_user = UserDAO(name=_userName, email=_userEmail, password=_userPassword)
+            db.session.add(new_user)
+            db.session.commit()
+            data =  {
+                'name': _userName,
+                'email': _userEmail
+            }
+            return JsonReturn.success(data, 201)
 
         except Exception as e:
             return JsonReturn.error(str(e))
-        
+
+class UserDAO(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=False, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(80), unique=False, nullable=False)
+    posts = db.relationship('PostDAO', backref='author', lazy='dynamic')
+
+    def __init__(self, name, email, password):
+        self.name = name
+        self.email = email
+        self.password = password

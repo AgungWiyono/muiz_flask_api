@@ -1,5 +1,6 @@
 from app import app
-from flaskext.mysql import MySQL
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
-mysql = MySQL()
-mysql.init_app(app)
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
