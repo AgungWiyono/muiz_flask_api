@@ -7,10 +7,9 @@ run following command to start using app
 ```
 git clone https://github.com/moslog/muiz_flask_api.git
 cd muiz_flask_api
+python3 -m venv flask
 source flask/bin/activate
 pip install -r requirements.txt
-export FLASK_APP=muiz_api.py
-export FLASK_ENV=development
 flask run
 ```
 
